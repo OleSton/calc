@@ -1,0 +1,458 @@
+* {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                           supported by Chrome, Edge, Opera and Firefox */
+}
+
+body {
+    background: #2c2c2c;
+    height: 100vh;
+}
+
+.container-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.headLabel-div {
+    /*margin-top: 10px; */
+    background: #b8891e;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    height: 10%;
+}
+
+.textHeader {
+    text-align: center;
+    color: #212529;
+    font-family: Arial;
+    font-size: inherit;
+}
+
+.numbLabel-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #212529;
+    margin-top: 5px;
+    color: #cb961b;
+    font-family: Arial;
+    font-size: inherit;
+    padding: 8px;
+    height: 100%;
+}
+
+.numb-text {
+    color: #cb961b;
+    background-color: #212529;
+    background-clip: padding-box;
+    border: 2px solid #cb961b;
+    line-height: 1;
+    padding: 10px;
+}
+
+.numb-text:focus {
+    outline: none;
+    border: 2px solid #cb961b;
+}
+
+.labelResult {
+    color: #cb961b;
+    letter-spacing: 20px;
+    margin-bottom: 8px;
+}
+
+.labelResult {
+    animation: labelResult 2s infinite; /* Параметры анимации */
+}
+
+@keyframes labelResult {
+    from {
+        opacity: 1; /* Непрозрачный текст */
+    }
+    to {
+        opacity: 0.7; /* Прозрачный текст */
+    }
+}
+
+.num {
+    border: 2px solid #cb961b;
+    width: 150px;
+    height: 150px;
+    margin: 5px;
+    align-content: center;
+    text-align: center;
+    cursor: pointer;
+}
+
+.num:hover {
+    background: #2c2c2c;
+}
+
+.rowNum-div {
+    display: flex;
+}
+.infoHeader{
+    /*display: flex; */
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    text-align: center;
+    font-size: xxx-large;
+}
+.btBack-div {
+    display: flex;
+    width: 15%;
+    height: 100%;
+    margin-left: 0%;
+    align-items: center;
+    border: 0px solid #cb961b;
+    text-align: center;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+    background-color: #e4a81c;
+    font-size: xxx-large;
+}
+.textBtBack{
+    margin-left: 25%;
+}
+.main-link-div{
+    padding-top: 10%;
+}
+.left-div, .right-div{
+    align-items: center;
+    width: 50%;
+}
+.editResult-out-div, .edit-in-div{
+    display: flex;
+    align-items: center;
+    width: 85%;
+    margin: auto;
+    border: 2px solid #cb961b;
+}
+.numbLabelConvert-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    text-align: center;
+}
+/* Стили для мобильных телефонов */
+@media (max-width: 600px) {
+    .container-div, .headLabel-div, .numbLabel-div {
+    }
+
+    .label, .textHeader {
+        text-align: center;
+        font-size: xxx-large;
+    }
+}
+
+/* Стили для планшетов @media (min-width: 601px) and (max-width: 1024px)*/
+@media (min-width: 601px) and (max-width: 1024px) {
+    .container-div, .headLabel-div, .numbLabel-div {
+        width: 100%;
+    }
+
+    .label, .textHeader, .numb-text {
+
+        text-align: center;
+        font-size: xxx-large;
+    }
+
+    .numb-text {
+        font-size: 7em;
+        width: 50%;
+    }
+    .numb-right-text, .numb-left-text{
+        width: 85%;
+        border: none;
+    }
+    #edit2-in-div, #editResult2-out-div{
+        margin-top: 20%;
+        margin-bottom: 10%;
+    }
+    .center-div{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 4em;
+    }
+    .label-procent-div{
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 220%;
+    }
+    .discr-left-div, .disc-right-div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 2.5em;
+        margin-bottom: 10%;
+
+    }
+    .note-div{
+        margin-top: inherit;
+        font-size: xx-large;
+    }
+    .numb-textAdm{
+        width: 80%;
+    }
+    .numb-right-text{
+        animation: numb-right-pulseText 2s infinite;
+    }
+    @keyframes numb-right-pulseText {
+        from {
+            opacity: 1; /* Непрозрачный текст */
+        }
+        to {
+            opacity: 0.7; /* Прозрачный текст */
+        }
+    }
+    .labelResult {
+        font-size: 7em;
+        margin-top: 0;
+        font-weight: 600;
+    }
+    .labelResultAdm {
+        letter-spacing: 13px;
+        font-size: 4.6em;
+    }
+    .num {
+        width: 250px;
+        height: 150px;
+        margin: 20px;
+        font-size: 4em;
+
+    }
+    .bt-link-div{
+        width: 350px;
+        height: 250px;
+        margin: 35px;
+    }
+
+    .keyboard-div {
+        padding-bottom: 50px;
+        height: auto;
+    }
+
+}
+
+/* Стили для десктопов */
+@media (min-width: 1025px) {
+    .headLabel-div, .numbLabel-div {
+        width: 50%;
+    }
+
+    .label, .numb-text {
+        text-align: center;
+    }
+
+    .numb-text {
+        font-size: xxx-large;
+        width: 30%;
+    }
+
+    .num {
+        order: 1px solid #7d5e17;
+        width: 150px;
+        height: 70px;
+        margin: 10px;
+        font-size: x-large;
+    }
+
+    .labelResult {
+        margin-top: 0;
+        font-size: xxx-large;
+    }
+    * {
+        visibility: hidden;
+    }
+    /* здесь подсказка, в которой предложить повернуть устройство.*/
+    body::before {
+        content: "For mobile devices only!";
+        visibility: visible;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 20px;
+        font-size: 1.5em;
+        text-align: center;
+        border-radius: 10px;
+        z-index: 9999;
+        width: 80%;
+        max-width: 400px;
+        white-space: pre-wrap; /* перенос строк при необходимости */
+    }
+}
+
+@media (orientation: landscape) {
+    * {
+        visibility: hidden;
+    }
+
+    /* здесь подсказка, в которой предложить повернуть устройство.*/
+    body::before {
+        content: 'For mobile devices only! \A AND \A Vertical position only!';
+        visibility: visible;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: #cb961b;
+        padding: 20px;
+        font-size: 1.5em;
+        text-align: center;
+        border-radius: 10px;
+        z-index: 9999;
+        width: 80%;
+        max-width: 400px;
+        white-space: pre-wrap; /* перенос строк при необходимости */
+    }
+
+}
+/*---------------------------*/
+.rollSelect{
+  /*  display: flex;
+    flex-direction: row; */
+    margin-top: 10%;
+}
+.viewport-in, .viewport-out{
+    /* Высота равна высоте одной карточки → видно по одной за раз */
+    height:460px;
+    overflow-y:auto;
+
+    /* Включаем прилипающий скролл */
+    scroll-snap-type:y mandatory;
+    scroll-behavior:smooth;        /* плавное проскальзывание */
+
+    /* Такой же «вырез» как в статье — края затемнены градиентом */
+    mask-image:linear-gradient(transparent 0%,#000 10%,#000 90%,transparent 100%);
+    -webkit-mask-image:linear-gradient(transparent 0%,#000 10%,#000 90%,transparent 100%);
+
+    border: 2px solid #cb961b;
+    width: 85%;
+    margin: auto;
+}
+
+/* Список карточек */
+.cards{
+    display:flex;
+    flex-direction:column;
+    gap:1.5rem;
+    padding:1.5rem 0;
+    align-items:center;            /* центрируем по горизонтали */
+}
+
+/* Одна карточка */
+.card-in, .card-out{
+    scroll-snap-align:center;      /* точка прилипания */
+    width:85%;
+    max-width: 85%;
+    overflow: hidden;
+    height:260px;
+    border-radius:.1rem;
+    background:#b8891e;
+    display:grid;
+    place-content:center;
+    font-size:4rem;
+    color:#333;
+    box-shadow:0 6px 12px rgba(0,0,0,.15);
+    user-select:none;              /* цифру не выделяем при свайпе */
+}
+/* небольшой эффект активной карточки */
+.card-in, .card-out:is(:hover,:focus-visible){
+    transform:scale(1.04);
+    transition:.25s;
+}
+
+
+.card-in.active, .card-out.active {
+    outline: 3px solid #007bff; /* синий контур */
+    box-shadow: 0 0 15px #007bff;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
+/* ───── окно-карусель горизонтально───── */
+/* ───── переменные ───── */
+:root{
+    --card-w : 350px;
+    --card-h : 160px;
+    --gap    : 2.0rem;
+    --cards-horizontally: 2;          /* сколько видно на широком экране */
+}
+@media (max-width:900px){ :root{ --cards-horizontally:2; } }
+@media (max-width:600px){ :root{ --cards-horizontally:1; } }
+
+.viewport-horizontally-Instrument::-webkit-scrollbar{display:none}   /* Chrome/Safari */
+.viewport-horizontally-Instrument:active{cursor:grabbing}
+
+.viewport-horizontally-Instrument, .viewport-horizontally-Chenal {
+    width : calc(var(--cards-horizontally)*var(--card-w) + (var(--cards-horizontally) - 1)*var(--gap));
+    height: var(--card-h);
+
+    overflow-x:auto;      /* горизонтальный скролл */
+    overflow-y:hidden;
+
+    scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;
+
+    /* края затемнены, как раньше */
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 10%,#000 90%,transparent 100%);
+    mask-image:linear-gradient(90deg,transparent 0%,#000 10%,#000 90%,transparent 100%);
+
+    /* ── NEW: скрываем нативный скроллбар и даём жестам приоритет ── */
+    scrollbar-width:none;           /* Firefox */
+    -ms-overflow-style:none;        /* IE/Edge legacy */
+    touch-action:pan-x;             /* только горизонтальные жесты */
+    cursor:grab;
+}
+/* ───── лента карточек ───── */
+.cards-horizontally-Instrument, .cards-horizontally-Chenal{
+    display:flex;
+    gap:var(--gap);
+    /* симметричный отступ, чтобы любая карточка могла стать центром */
+    padding-inline:calc(50% - var(--card-w)/2);
+    align-items:center;
+}
+
+/* ───── карточка ───── */
+.card-horizontally-Instrument, .card-horizontally-Chenal{
+    flex:0 0 var(--card-w);
+    width:var(--card-w);
+    height:var(--card-h);
+
+    scroll-snap-align:center;
+    scroll-snap-stop:always;    /* шаг = ровно 1 карточка */
+
+    border-radius:0rem;
+    background:#b8891e;
+    display:grid;
+    place-content:center;
+    font-size:2.8rem;
+    color:#333;
+    box-shadow:0 6px 12px rgba(0,0,0,.15);
+    user-select:none;
+    transition:.25s;
+}
+.card-horizontally-Instrument, .card-horizontally-Chenal:is(:hover,:focus-visible){transform:scale(1.04)}
+
+.card-horizontally-Instrument.active, .card-horizontally-Chenal.active {
+    outline: 5px solid #007bff;
+    box-shadow: 0 0 15px #007bff;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}

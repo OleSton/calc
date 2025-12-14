@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<!-- saved from url=(0034)https://ol76.ddns.net/Balance.html -->
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+
+    <title>Service key</title>
+    <link rel="stylesheet" href="./index_files/styles.css">
+    <link rel="manifest" href="https://ol76.ddns.net/manifest.json">
+
+    <script>
+        if ('serviceWorker' in navigator)
+        {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        let  initialHeight_edit_div, font_size_edit_result_start;
+        let  g_value_in, g_value_in_unit, g_value_out_unit;       // Set global vars
+        let  active_input_id;
+        /*================= по какому input или элементу кликнули*/
+        function SelectInput(input_id){
+            console.log("Select Input", input_id);
+            active_input_id = input_id;                      // save active input
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {                       //cycle reset all divs shadow
+                document.querySelector('#'+input.id+'-div').style.boxShadow = '';
+            });
+            const element = document.querySelector('#'+input_id+'-div');
+            element.style.boxShadow = '0px 20px 0px 0px #cb961b'; // set shadow for activ div and input
+        }
+
+        /*=================*/
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const div = document.getElementById('edit-in-div');
+            const style = window.getComputedStyle(div);
+            // Запоминаем размеры
+            const height = div.offsetHeight;
+            // Толщина верхнего и нижнего бордера
+            const borderTop = parseFloat(style.borderTopWidth);
+            const borderBottom = parseFloat(style.borderBottomWidth);
+            initialHeight_edit_div  = height - borderTop - borderBottom;
+
+            const input = document.getElementById('editResult-out');
+            font_size_edit_result_start = parseFloat(window.getComputedStyle(input).fontSize); //parseFloat(window.getComputedStyle(document.getElementById('edit-in-div')).fontSize);
+            document.getElementById('edit-in').click();
+
+            const result = solveUglCarbon({ mA: 0.5, C_A: 0.25, mB: NaN, C_B: 0.1 });
+            console.log(result); // { mB: 1.25 }
+        });
+        /*----------------------------------------------------------------------*/
+        function keyboardClick(key){
+            console.log(key);
+
+            var str = document.querySelector('#' + active_input_id).value;
+            if (key == 'C') {
+                key = '';
+                str = '';
+                resetValueInputsCol(active_input_id);
+            }
+
+            if (str.length == 8) return;
+            var strValue_in = str + key;
+            if (countDots(strValue_in) > 1)  strValue_in = strValue_in.slice(0, -1);
+            document.getElementById(active_input_id).value = strValue_in;
+            if (strValue_in.length > 0 && strValue_in.length < 8)
+            {
+                g_value_in = strValue_in;
+                fitTextInInput( document.getElementById(active_input_id));
+                valueInput();valueInput();
+            }else {
+                //document.getElementById('editResult-out').value = "";
+                g_value_in = "";
+            }
+        }
+        function countDots(str) {
+            const matches = str.match(/\./g);
+            return matches ? matches.length : 0;
+        } // count dots in string
+        /*----------------------------------------------------------------------*/
+
+        function round(n, dec) {
+            X = n * Math.pow(10, dec);
+            X= Math.round(X);
+            return (X / Math.pow(10, dec)).toFixed(dec);
+        }
+        function getFieldFloatValue(str) {
+            return parseFloat(str.replace(/,/g, "."));
+            //return parseFloat(str.replace("\,","."));
+        }
+        /*----------------------------------------------------------------------*/
+        function isValidNumberString(value) {
+            // Проверка, что значение состоит только из цифр и длина не больше 15
+            value = value.trim(value);
+            const regex = /^\d{1,5}$/;
+            return regex.test(value);
+        } // chek valid string
+        /*----------------------------------------------------------------------*/
+        function resetValueInputsCol(input_id){
+            if (input_id == 'edit-in' || input_id == 'edit2-in') {
+                document.getElementById('edit-in').value = '';
+                document.getElementById('edit2-in').value = '';
+                document.getElementById('note-in').textContent  = '\u200B';
+
+            }
+            if (input_id == 'editResult-out' || input_id == 'editResult2-out') {
+                document.getElementById('editResult-out').value = '';
+                document.getElementById('editResult2-out').value = '';
+                document.getElementById('note-out').textContent  = '\u200B';
+            }
+
+        }
+        /*----------------------------------------------------------------------*/
+        function fitTextInInput(input) { // adaptic size of text foe div
+
+            let fontSize = font_size_edit_result_start;
+            input.style.fontSize = fontSize + 'px';
+            const minFontSize = 8; // минимальный размер шрифта
+
+            // Пока текст не помещается и размер шрифта больше минимального
+            while (input.scrollWidth > input.clientWidth && fontSize > minFontSize) {
+                fontSize -= 0.5; // уменьшаем размер шрифта
+                input.style.fontSize = fontSize  + 'px';
+            }
+            document.getElementById(input.id +'-div').style.height = initialHeight_edit_div + 'px';
+        }
+        /*----------------------------------------------------------------------*/
+        function valueInput() {
+            const mA_value = (getFieldFloatValue(document.getElementById('edit-in').value) != "") ? getFieldFloatValue(document.getElementById('edit-in').value) : NaN;
+            const C_A_value = (getFieldFloatValue(document.getElementById('edit2-in').value) != "") ? getFieldFloatValue(document.getElementById('edit2-in').value) : NaN;
+            const mB_value = (getFieldFloatValue(document.getElementById('editResult-out').value) != "") ? getFieldFloatValue(document.getElementById('editResult-out').value) : NaN;
+            const C_B_value = (getFieldFloatValue(document.getElementById('editResult2-out').value) != "") ? getFieldFloatValue(document.getElementById('editResult2-out').value) : NaN;
+
+            if (!isNaN(mA_value) && !isNaN(C_A_value)) {
+                const massElSample = Number(massElemSample(mA_value, C_A_value)).toString();
+                document.getElementById('note-in').textContent  = massElSample + ' g';
+            }
+            if (!isNaN(mB_value) && !isNaN(C_B_value)) {
+                const massElSample = Number(massElemSample(mB_value, C_B_value)).toString();
+                document.getElementById('note-out').textContent  = massElSample + ' g';
+            }
+
+            const emptyInputs = getArrayImputEmpty();
+            if (emptyInputs.length == 1) {
+                const result = solveUglCarbon({mA: mA_value, C_A: C_A_value, mB: mB_value, C_B: C_B_value});
+                console.log(Object.values(result)[0]);
+                document.getElementById(emptyInputs[0]).value = Number(round(Object.values(result)[0], 7)).toString();
+                fitTextInInput(document.getElementById(emptyInputs[0]));
+            }
+        }
+        function getArrayImputEmpty(){
+            const inputs = document.querySelectorAll('input[type="text"]');
+            const emptyInputs = [];
+            inputs.forEach(input => {
+                if (input.value.trim() === '') {
+                    emptyInputs.push(input.id);
+                }
+            });
+            return emptyInputs;
+        }
+        /*====================*/
+        function massElemSample(mass, elemProc){
+            return round(mass * elemProc / 100, 6);
+        }
+
+        function solveUglCarbon(params) {
+            const { mA, C_A, mB, C_B } = params;
+
+            const knowns = [mA, C_A, mB, C_B].filter(p => !isNaN(p));
+            if (knowns.length < 3) {
+                throw new Error('Недостаточно известных параметров для решения.');
+            }
+
+            if (isNaN(mA) && !isNaN(C_A) && !isNaN(mB) && !isNaN(C_B)) {
+                return { mA: (mB * C_B) / C_A };
+            } else if (isNaN(C_A) && !isNaN(mA) && !isNaN(mB) && !isNaN(C_B)) {
+                return { C_A: (mB * C_B) / mA };
+            } else if (isNaN(mB) && !isNaN(mA) && !isNaN(C_A) && !isNaN(C_B)) {
+                return { mB: (mA * C_A) / C_B };
+            } else if (isNaN(C_B) && !isNaN(mA) && !isNaN(C_A) && !isNaN(mB)) {
+                return { C_B: (mA * C_A) / mB };
+            } else {
+                throw new Error('Недостаточно данных или параметры заданы некорректно.');
+            }
+        }
+        // Пример использования:
+
+        //  const result = solveUglCarbon({ mA: 0.5, C_A: 0.25, mB: null, C_B: 0.1 });
+       // console.log(result); // { mB: 1.25 }
+    </script>
+</head>
+<body>
+<div class="container-div">
+    <div class="headLabel-div">
+        
+        <div class="infoHeader">
+            <p class="textHeader">Balance</p>
+        </div>
+    </div>
+
+    <div class="numbLabel-div numbLabelConvert-div">
+        <div class="left-div">
+            <div class="discr-left-div">
+               Ref. Sample
+            </div>
+            <div class="edit-in-div" id="edit-in-div" style="box-shadow: rgb(203, 150, 27) 0px 20px 0px 0px;">
+                <input type="text" id="edit-in" name="numb" class="numb-text numb-left-text" value="" maxlength="5" readonly="readonly" style="border: none;" onclick="SelectInput(this.id)">
+            </div>
+            <div class="edit-in-div" id="edit2-in-div">
+                <input type="text" id="edit2-in" name="numb" class="numb-text numb-left-text" value="" maxlength="5" readonly="readonly" style="border: none;" onclick="SelectInput(this.id)">
+            </div>
+            <div id="note-in" class="note-div">&nbsp;</div>
+        </div>
+        <div class="center-div">
+            <div class="label-procent-div">
+                &nbsp;
+            </div>
+            <div class="label-procent-div">
+                %
+            </div>
+            <div class="label-procent-div">
+                g
+            </div>
+
+        </div>
+        <div class="right-div">
+            <div class="disc-right-div">
+                Sample
+            </div>
+            <div class="editResult-out-div" id="editResult-out-div">
+                <input type="text" id="editResult-out" name="numb" class="numb-text numb-left-text" value="" readonly="readonly" style="border: none;" onclick="SelectInput(this.id)">
+            </div>
+            <div class="editResult-out-div" id="editResult2-out-div">
+                <input type="text" id="editResult2-out" name="numb" class="numb-text numb-left-text" value="" readonly="readonly" style="border: none;" onclick="SelectInput(this.id)">
+            </div>
+            <div id="note-out" class="note-div">&nbsp;</div>
+        </div>
+    </div>
+
+    <div class="numbLabel-div keyboard-div">
+        <div class="rowNum-div">
+            <div class="num" onclick="keyboardClick(&#39;1&#39;)">1</div> <div class="num" onclick="keyboardClick(&#39;2&#39;)">2</div> <div class="num" onclick="keyboardClick(&#39;3&#39;)">3</div>
+        </div>
+        <div class="rowNum-div">
+            <div class="num" onclick="keyboardClick(&#39;4&#39;)">4</div> <div class="num" onclick="keyboardClick(&#39;5&#39;)">5</div> <div class="num" onclick="keyboardClick(&#39;6&#39;)">6</div>
+        </div>
+        <div class="rowNum-div">
+            <div class="num" onclick="keyboardClick(&#39;7&#39;)">7</div> <div class="num" onclick="keyboardClick(&#39;8&#39;)">8</div> <div class="num" onclick="keyboardClick(&#39;9&#39;)">9</div>
+        </div>
+        <div class="rowNum-div">
+            <div class="num" onclick="keyboardClick(&#39;C&#39;)">C</div> <div class="num" onclick="keyboardClick(&#39;0&#39;)">0</div> <div class="num" onclick="keyboardClick(&#39;.&#39;)">.</div>
+        </div>
+    </div>
+</div>
+
+
+
+</body></html>
