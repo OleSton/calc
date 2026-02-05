@@ -1,28 +1,15 @@
 <!DOCTYPE html>
-
 <html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
 
-    <title>Mass Calc</title>
-    <link rel="stylesheet" href="./index_files/styles.css">
-
-    <script>
-        if ('serviceWorker' in navigator)
-        {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js').then(function(registration) {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                }, function(err) {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
-            });
-        }
-    </script>
+    <title>Balance</title>
+    <link rel="stylesheet" href="./Balance_files/styles.css">
 
     <script type="text/javascript">
         let  initialHeight_edit_div, font_size_edit_result_start;
         let  g_value_in, g_value_in_unit, g_value_out_unit;       // Set global vars
         let  active_input_id;
+        let  last_empty_input;
         /*================= по какому input или элементу кликнули*/
         function SelectInput(input_id){
             console.log("Select Input", input_id);
@@ -52,12 +39,12 @@
             font_size_edit_result_start = parseFloat(window.getComputedStyle(input).fontSize); //parseFloat(window.getComputedStyle(document.getElementById('edit-in-div')).fontSize);
             document.getElementById('edit-in').click();
 
-            const result = solveUglCarbon({ mA: 0.5, C_A: 0.25, mB: NaN, C_B: 0.1 });
-            console.log(result); // { mB: 1.25 }
+            //const result = solveUglCarbon({ mA: 0.5, C_A: 0.25, mB: NaN, C_B: 0.1 });
+            //console.log(result); // { mB: 1.25 }
         });
         /*----------------------------------------------------------------------*/
         function keyboardClick(key){
-            console.log(key);
+            console.log("Key press: " + key);
 
             var str = document.querySelector('#' + active_input_id).value;
             if (key == 'C') {
@@ -74,7 +61,7 @@
             {
                 g_value_in = strValue_in;
                 fitTextInInput( document.getElementById(active_input_id));
-                valueInput();valueInput();
+                valueInput();//valueInput();
             }else {
                 //document.getElementById('editResult-out').value = "";
                 g_value_in = "";
@@ -115,7 +102,7 @@
                 document.getElementById('editResult2-out').value = '';
                 document.getElementById('note-out').textContent  = '\u200B';
             }
-
+            last_empty_input = null; // reset var last empty 
         }
         /*----------------------------------------------------------------------*/
         function fitTextInInput(input) { // adaptic size of text foe div
@@ -133,11 +120,25 @@
         }
         /*----------------------------------------------------------------------*/
         function valueInput() {
-            const mA_value = (getFieldFloatValue(document.getElementById('edit-in').value) != "") ? getFieldFloatValue(document.getElementById('edit-in').value) : NaN;
-            const C_A_value = (getFieldFloatValue(document.getElementById('edit2-in').value) != "") ? getFieldFloatValue(document.getElementById('edit2-in').value) : NaN;
-            const mB_value = (getFieldFloatValue(document.getElementById('editResult-out').value) != "") ? getFieldFloatValue(document.getElementById('editResult-out').value) : NaN;
-            const C_B_value = (getFieldFloatValue(document.getElementById('editResult2-out').value) != "") ? getFieldFloatValue(document.getElementById('editResult2-out').value) : NaN;
 
+            if (last_empty_input != null){
+                document.getElementById(last_empty_input[0]).value = "";
+            }
+            let { mA_value, C_A_value, mB_value, C_B_value } = getValues();
+
+            const emptyInputs = getArrayImputEmpty();
+            if (emptyInputs.length == 1) {
+                last_empty_input = emptyInputs; // save last empty input
+                console.log("last_empty_input:" + last_empty_input);
+
+                const result = solveUglCarbon({mA: mA_value, C_A: C_A_value, mB: mB_value, C_B: C_B_value});
+                //console.log(Object.values(result)[0]);
+                document.getElementById(emptyInputs[0]).value = Number(round(Object.values(result)[0], 7)).toString();
+                fitTextInInput(document.getElementById(emptyInputs[0]));
+
+            }
+
+            ({ mA_value, C_A_value, mB_value, C_B_value } = getValues());
             if (!isNaN(mA_value) && !isNaN(C_A_value)) {
                 const massElSample = Number(massElemSample(mA_value, C_A_value)).toString();
                 document.getElementById('note-in').textContent  = massElSample + ' g';
@@ -147,14 +148,21 @@
                 document.getElementById('note-out').textContent  = massElSample + ' g';
             }
 
-            const emptyInputs = getArrayImputEmpty();
-            if (emptyInputs.length == 1) {
-                const result = solveUglCarbon({mA: mA_value, C_A: C_A_value, mB: mB_value, C_B: C_B_value});
-                console.log(Object.values(result)[0]);
-                document.getElementById(emptyInputs[0]).value = Number(round(Object.values(result)[0], 7)).toString();
-                fitTextInInput(document.getElementById(emptyInputs[0]));
+            function getValues() {
+                const getValue = (id) => {
+                const val = getFieldFloatValue(document.getElementById(id).value);
+                return val !== "" ? val : NaN;
+                                        };
+
+            return {
+                    mA_value: getValue('edit-in'),
+                    C_A_value: getValue('edit2-in'),
+                    mB_value: getValue('editResult-out'),
+                    C_B_value: getValue('editResult2-out')
+                };
             }
         }
+
         function getArrayImputEmpty(){
             const inputs = document.querySelectorAll('input[type="text"]');
             const emptyInputs = [];
@@ -170,7 +178,7 @@
             return round(mass * elemProc / 100, 6);
         }
 
-        function solveUglCarbon(params) {
+        function solveUglCarbon(params) {           // calculate result
             const { mA, C_A, mB, C_B } = params;
 
             const knowns = [mA, C_A, mB, C_B].filter(p => !isNaN(p));
@@ -199,7 +207,9 @@
 <body>
 <div class="container-div">
     <div class="headLabel-div">
-        
+        <div class="btBack-div" onclick="window.location.href=&#39;index.html&#39;;">
+            <p class="textBtBack">&lt;&lt;</p>
+        </div>
         <div class="infoHeader">
             <p class="textHeader">Balance</p>
         </div>
